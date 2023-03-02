@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:image/image.dart' as image;
 import 'package:image_picker/image_picker.dart' as image_picker;
@@ -91,6 +92,8 @@ class _WebViewScreenState extends State<WebViewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    FlutterNativeSplash.remove(); // 스플래시 화면 종료
+
     return WillPopScope(
       onWillPop: () {
         var future = Platform.isAndroid
