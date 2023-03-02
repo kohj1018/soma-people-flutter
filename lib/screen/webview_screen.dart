@@ -3,6 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:image/image.dart' as image;
+import 'package:image_picker/image_picker.dart' as image_picker;
+import 'package:webview_flutter_android/webview_flutter_android.dart';
+import 'package:path_provider/path_provider.dart';
 
 class WebViewScreen extends StatefulWidget {
   const WebViewScreen({Key? key}) : super(key: key);
@@ -13,6 +17,7 @@ class WebViewScreen extends StatefulWidget {
 
 class _WebViewScreenState extends State<WebViewScreen> {
   late final WebViewController controller;
+  late final AndroidWebViewController androidController;
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
@@ -20,6 +25,39 @@ class _WebViewScreenState extends State<WebViewScreen> {
       _selectedIndex = index;
     });
     controller.runJavaScript('window.changePage($index)');
+  }
+
+  void initFilePicker() async {
+    if (Platform.isAndroid) {
+      androidController = (controller.platform as AndroidWebViewController);
+      await androidController.setOnShowFileSelector(_androidFilePicker);
+    }
+  }
+
+  Future<List<String>> _androidFilePicker(FileSelectorParams params) async {
+    // if (params.acceptTypes.any((type) => type == 'image/*')) {
+      final picker = image_picker.ImagePicker();
+      final photo = await picker.pickImage(source: image_picker.ImageSource.gallery);
+
+      if (photo == null) {
+        return [];
+      }
+
+      final imageData = await photo.readAsBytes();
+      final decodedImage = image.decodeImage(imageData)!;
+      final scaledImage = image.copyResize(decodedImage, width: 500);
+      final jpg = image.encodeJpg(scaledImage, quality: 90);
+
+      final filePath = (await getTemporaryDirectory()).uri.resolve(
+            './image_${DateTime.now().microsecondsSinceEpoch}.jpg',
+          );
+      final file = await File.fromUri(filePath).create(recursive: true);
+      await file.writeAsBytes(jpg, flush: true);
+
+      return [file.uri.toString()];
+    // }
+
+    return [];
   }
 
   @override
@@ -47,16 +85,24 @@ class _WebViewScreenState extends State<WebViewScreen> {
           : 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Mobile Safari/537.36')
       ..enableZoom(false)
       ..loadRequest(Uri.parse('https://www.somapeople.kr'));
+
+    initFilePicker();
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        var future = controller.canGoBack();
+        var future = Platform.isAndroid
+            ? androidController.canGoBack()
+            : controller.canGoBack();
         future.then((canGoBack) => {
               if (canGoBack)
-                {controller.goBack()}
+                {
+                  Platform.isAndroid
+                      ? androidController.goBack()
+                      : controller.goBack()
+                }
               else
                 {
                   showDialog(
@@ -86,7 +132,13 @@ class _WebViewScreenState extends State<WebViewScreen> {
       },
       child: SafeArea(
         child: Scaffold(
-          body: WebViewWidget(controller: controller),
+          body: Platform.isAndroid
+              ? AndroidWebViewWidget(
+                  PlatformWebViewWidgetCreationParams(
+                    controller: androidController,
+                  ),
+                ).build(context)
+              : WebViewWidget(controller: controller),
           bottomNavigationBar: BottomNavigationBar(
             backgroundColor: Colors.white,
             selectedItemColor: const Color(0xff374151),
