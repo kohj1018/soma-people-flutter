@@ -8,6 +8,7 @@ import 'package:image/image.dart' as image;
 import 'package:image_picker/image_picker.dart' as image_picker;
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class WebViewScreen extends StatefulWidget {
   const WebViewScreen({Key? key}) : super(key: key);
@@ -26,6 +27,13 @@ class _WebViewScreenState extends State<WebViewScreen> {
       _selectedIndex = index;
     });
     controller.runJavaScript('window.changePage($index)');
+  }
+
+  // 외부 링크 이동
+  Future<void> _launchUrl(Uri url) async {
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch $url');
+    }
   }
 
   void initFilePicker() async {
@@ -75,9 +83,10 @@ class _WebViewScreenState extends State<WebViewScreen> {
             onPageFinished: (String url) {},
             onWebResourceError: (WebResourceError error) {},
             onNavigationRequest: (NavigationRequest request) {
-              // if (request.url.startsWith('https://www.youtube.com/')) {
-              //   return NavigationDecision.prevent;
-              // }
+              if (request.url.startsWith('https://www.swmaestro.org/')) {
+                _launchUrl(Uri.parse(request.url));
+                return NavigationDecision.prevent;
+              }
               return NavigationDecision.navigate;
             }),
       )
