@@ -40,6 +40,9 @@ dependencies:
   image: ^4.0.15
   image_picker: ^0.8.6
   path_provider: ^2.0.13
+  sign_in_with_apple: ^4.3.0
+  firebase_auth: ^4.2.10
+  firebase_core: ^2.7.1
   url_launcher: ^6.1.10
 
 dev_dependencies:
