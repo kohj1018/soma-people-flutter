@@ -83,11 +83,12 @@ class _WebViewScreenState extends State<WebViewScreen> {
             onPageFinished: (String url) {},
             onWebResourceError: (WebResourceError error) {},
             onNavigationRequest: (NavigationRequest request) {
-              if (request.url.startsWith('https://www.swmaestro.org/')) {
+              if (request.url.startsWith('https://www.somapeople.kr') || request.url.startsWith('https://somapeople.kr')) {
+                return NavigationDecision.navigate;
+              } else {
                 _launchUrl(Uri.parse(request.url));
                 return NavigationDecision.prevent;
               }
-              return NavigationDecision.navigate;
             }),
       )
       ..setUserAgent(Platform.isIOS
