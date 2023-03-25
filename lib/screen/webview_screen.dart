@@ -22,6 +22,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
   late final AndroidWebViewController androidController;
   int _selectedIndex = 0;
 
+  // 탭 이동 함수
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -36,6 +37,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
     }
   }
 
+  // 파일피커 초기화 함수
   void initFilePicker() async {
     if (Platform.isAndroid) {
       androidController = (controller.platform as AndroidWebViewController);
@@ -43,6 +45,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
     }
   }
 
+  // 안드로이드 파일피커 함수
   Future<List<String>> _androidFilePicker(FileSelectorParams params) async {
     // if (params.acceptTypes.any((type) => type == 'image/*')) {
       final picker = image_picker.ImagePicker();

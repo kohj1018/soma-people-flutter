@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "765379812232",
+    "project_id": "soma-people",
+    "storage_bucket": "soma-people.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:765379812232:android:fc224ba27ec5d540a6f83d",
+        "android_client_info": {
+          "package_name": "kr.somapeople.soma_people_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "765379812232-eifl7p0t3o3gs0ktp0tchmr1vrn9g7rq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJTELPXdRDaSliymaBPbSI9egU1dByKvI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "765379812232-eifl7p0t3o3gs0ktp0tchmr1vrn9g7rq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "765379812232-s705rdp354mlpqkc3ac15je86lv1ng53.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "kr.somapeople.somaPeopleFlutter"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
