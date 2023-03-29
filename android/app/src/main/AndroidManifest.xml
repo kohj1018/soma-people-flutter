@@ -30,6 +30,10 @@
         </activity>
        <!--   알림 받기    -->
        <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver" android:exported="false" />
+       <!--   Notification    -->
+       <meta-data
+           android:name="com.google.firebase.messaging.default_notification_channel_id"
+           android:value="somain_notification" />
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

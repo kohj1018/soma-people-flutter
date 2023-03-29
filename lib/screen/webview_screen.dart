@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -11,7 +12,12 @@ import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class WebViewScreen extends StatefulWidget {
-  const WebViewScreen({Key? key}) : super(key: key);
+  const WebViewScreen({
+    Key? key,
+    required this.firebaseToken,
+  }) : super(key: key);
+
+  final String? firebaseToken;
 
   @override
   State<WebViewScreen> createState() => _WebViewScreenState();
@@ -86,7 +92,10 @@ class _WebViewScreenState extends State<WebViewScreen> {
             onPageFinished: (String url) {},
             onWebResourceError: (WebResourceError error) {},
             onNavigationRequest: (NavigationRequest request) {
-              if (request.url.startsWith('https://www.somapeople.kr') || request.url.startsWith('https://somapeople.kr')) {
+              // if (request.url.startsWith('https://www.somapeople.kr') || request.url.startsWith('https://somapeople.kr')
+              if (request.url.startsWith('https://soma-people-develop.vercel.app') || request.url.startsWith('https://www.soma-people-develop.vercel.app')
+                  || request.url.startsWith('https://accounts.google') || request.url.startsWith('https://accounts.youtube')
+                  || request.url.startsWith('https://appleid.apple.com')) {
                 return NavigationDecision.navigate;
               } else {
                 _launchUrl(Uri.parse(request.url));
@@ -94,19 +103,32 @@ class _WebViewScreenState extends State<WebViewScreen> {
               }
             }),
       )
-      ..setUserAgent(Platform.isIOS
-          ? 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_1_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.1 Mobile/15E148 Safari/604.1'
-          : 'Mozilla/5.0 (Linux; Android 10; Redmi Note 8 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.88 Mobile Safari/537.36')
+      // ..setUserAgent(Platform.isIOS
+      //     ? 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_1_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.1 Mobile/15E148 Safari/604.1'
+      //     : 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Mobile Safari/537.36')
       ..enableZoom(false)
-      ..loadRequest(Uri.parse('https://www.somapeople.kr'));
+      ..addJavaScriptChannel(       // 웹뷰 로딩 완료 된 후 첫 번째로 실행될 자바스크립트 채널
+          'AfterLoadingIsComplete',
+          onMessageReceived: (JavaScriptMessage message) {
+            var data = jsonDecode(message.message);
+
+            controller.setUserAgent("${data['userAgent'].toString().replaceAll("; wv)", ")")} WEB_VIEW"); // 웹뷰 표식
+
+            if (data['userId'] > 0) { // 로그인 한 경우에 firebaseToken 을 서버에 보냄
+              controller.runJavaScript("window.registerFirebaseToken('${data['userId']}', '${widget.firebaseToken}')");
+            }
+
+            FlutterNativeSplash.remove(); // 스플래시 화면 종료
+          }
+      )
+      // ...loadRequest(Uri.parse('https://www.somapeople.kr'));
+      ..loadRequest(Uri.parse('https://soma-people-develop.vercel.app'));
 
     initFilePicker();
   }
 
   @override
   Widget build(BuildContext context) {
-    FlutterNativeSplash.remove(); // 스플래시 화면 종료
-
     return WillPopScope(
       onWillPop: () {
         var future = Platform.isAndroid
