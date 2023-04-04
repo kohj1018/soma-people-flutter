@@ -181,6 +181,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
             backgroundColor: Colors.white,
             selectedItemColor: const Color(0xff374151),
             unselectedItemColor: const Color(0xffE5E7EB),
+            type: BottomNavigationBarType.fixed,
             items: const [
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
@@ -189,6 +190,10 @@ class _WebViewScreenState extends State<WebViewScreen> {
               BottomNavigationBarItem(
                 icon: Icon(Icons.article),
                 label: '게시판',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.notifications),
+                label: '알림',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.person),
