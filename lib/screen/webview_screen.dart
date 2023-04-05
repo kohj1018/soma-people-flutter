@@ -111,7 +111,11 @@ class _WebViewScreenState extends State<WebViewScreen> {
           onMessageReceived: (JavaScriptMessage message) {
             var data = jsonDecode(message.message);
 
-            controller.setUserAgent("${data['userAgent'].toString().replaceAll("; wv)", ")")} WEB_VIEW"); // 웹뷰 표식
+            if (Platform.isAndroid) {
+              controller.setUserAgent("${data['userAgent'].toString().replaceAll("; wv)", ")")} WEB_VIEW"); // 웹뷰 표식
+            } else {
+              controller.setUserAgent("${data['userAgent']} Version/13.0.1 Safari/604.1 WEB_VIEW"); // 웹뷰 표식
+            }
 
             if (data['userId'] > 0) { // 로그인 한 경우에 firebaseToken 을 서버에 보냄
               controller.runJavaScript("window.registerFirebaseToken('${data['userId']}', '${widget.firebaseToken}')");
