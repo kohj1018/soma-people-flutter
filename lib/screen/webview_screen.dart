@@ -118,6 +118,8 @@ class _WebViewScreenState extends State<WebViewScreen> {
               controller.runJavaScript("window.registerFirebaseToken('${data['userId']}', '${widget.firebaseToken}')");
             }
 
+            controller.runJavaScript("window.getAppVersion(${'1.0.0'})");
+
             FlutterNativeSplash.remove(); // 스플래시 화면 종료
           }
       )
