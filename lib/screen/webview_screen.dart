@@ -33,7 +33,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
     setState(() {
       _selectedIndex = index;
     });
-    controller.runJavaScript('window.changePage($index)');
+    controller.runJavaScript("window.changePage($index, ${4})");
   }
 
   // 외부 링크 이동
@@ -92,8 +92,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
             onPageFinished: (String url) {},
             onWebResourceError: (WebResourceError error) {},
             onNavigationRequest: (NavigationRequest request) {
-              // if (request.url.startsWith('https://www.somapeople.kr') || request.url.startsWith('https://somapeople.kr')
-              if (request.url.startsWith('https://soma-people-develop.vercel.app') || request.url.startsWith('https://www.soma-people-develop.vercel.app')
+              if (request.url.startsWith('https://www.somapeople.kr') || request.url.startsWith('https://somapeople.kr')
                   || request.url.startsWith('https://accounts.google') || request.url.startsWith('https://accounts.youtube')
                   || request.url.startsWith('https://appleid.apple.com')) {
                 return NavigationDecision.navigate;
@@ -123,8 +122,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
             FlutterNativeSplash.remove(); // 스플래시 화면 종료
           }
       )
-      // ...loadRequest(Uri.parse('https://www.somapeople.kr'));
-      ..loadRequest(Uri.parse('https://soma-people-develop.vercel.app'));
+      ..loadRequest(Uri.parse('https://www.somapeople.kr'));
 
     initFilePicker();
   }
