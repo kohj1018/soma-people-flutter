@@ -38,7 +38,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
 
   // 외부 링크 이동
   Future<void> _launchUrl(Uri url) async {
-    if (!await launchUrl(url)) {
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication, webOnlyWindowName: '_blank')) {
       throw Exception('Could not launch $url');
     }
   }
